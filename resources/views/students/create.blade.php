@@ -17,8 +17,8 @@
 
 
 
-    <form action="" method="POST" class="space-y-6 border border-[#E5E3DB] bg-white p-8">
-
+    <form action="{{ route('students.store') }}" method="POST" class="space-y-6 border border-[#E5E3DB] bg-white p-8">
+             @csrf
 
 
         <div>
@@ -57,9 +57,11 @@
             <select id="gender" name="gender"
                class="w-full border border-[#D9D6CD] bg-[#FCFBF8] px-3.5 py-2.5 text-sm focus:border-[#A16207] focus:bg-white focus:outline-none">
 
-                <option value="L">Laki-laki</option>
+                <option value="">Pilih gender</option>
 
-                <option value="P">Perempuan</option>
+                <option value="">Laki-laki</option>
+
+                <option value="">Perempuan</option> 
 
             </select>
 
@@ -77,11 +79,11 @@
 
                 <option value="">Pilih jurusan</option>
 
-                <option value="">AKL</option>
+                <option value="AKL">AKL</option>
 
-                <option value="">TKJ</option>
+                <option value="TKJ">TKJ</option>
 
-                <option value="">BiD</option>
+                <option value="BiD">BiD</option>
 
             </select>
 

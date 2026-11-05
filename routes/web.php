@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\MajorController;
 use App\Http\Controllers\SchoolClass\IndexController;
 use App\Http\Controllers\SchoolClass\ShowController;
@@ -16,6 +17,14 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+// autentikasi
+Route::get('/login', [AuthController::class, 'loginview'])->name('login');
+Route::post('/login', [AuthController::class, 'loginpost'])->name('login-post');
+Route::get('/register', [AuthController::class, 'registerview'])->name('register-view');
+Route::post('/register', [AuthController::class, 'registerpost'])->name('register-post');
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
 Route::name('students.')->prefix('students')->group(function () {
     Route::get('/', [StudentController::class, 'index'])->name('index');
     Route::get('/create', [StudentController::class, 'create'])->name('create');
@@ -26,36 +35,24 @@ Route::name('students.')->prefix('students')->group(function () {
     Route::delete('/{student}', [StudentController::class, 'destroy'])->name('destroy');
 });
 
-Route::name('teachers.')->prefix('teachers')->group(function(){
-    Route::get('/',[TeacherController::class, 'index'])->name('index');
-
-    Route::get('/{id}' , [TeacherController::class, 'show'])->name('show')->whereNumber('id');
-
-    Route::get('/create' , [TeacherController::class, 'create'])->name('create');
-
-    Route::get('/{id}/edit' , [TeacherController::class, 'edit'])->name('edit');
-
+Route::name('teachers.')->prefix('teachers')->group(function () {
+    Route::get('/', [TeacherController::class, 'index'])->name('index');
+    Route::get('/create', [TeacherController::class, 'create'])->name('create');
+    Route::get('/{id}', [TeacherController::class, 'show'])->name('show')->whereNumber('id');
+    Route::get('/{id}/edit', [TeacherController::class, 'edit'])->name('edit');
     Route::post('/', [TeacherController::class, 'store'])->name('store');
+    Route::put('/{id}', [TeacherController::class, 'update'])->name('update');
+    Route::delete('/{id}', [TeacherController::class, 'destroy'])->name('destroy');
+});
 
-    Route::put('/{id}' , [TeacherController::class, 'update'])->name('update');
-
-    Route::delete(' /{id}' , [TeacherController::class, 'destroy'])->name('destroy');
-    });
-
-Route::name('classes.')->prefix('classes')->group(function(){
-    Route::get('/',IndexController::class)->name('index');
-
-    Route::get('/{id}' , ShowController::class)->name('show')->whereNumber('id');
-
-    Route::get('/create' , CreateController::class)->name('create');
-
-    Route::get('/{id}/edit' , EditController::class)->name('edit');
-
+Route::name('classes.')->prefix('classes')->group(function () {
+    Route::get('/', IndexController::class)->name('index');
+    Route::get('/create', CreateController::class)->name('create');
+    Route::get('/{id}', ShowController::class)->name('show')->whereNumber('id');
+    Route::get('/{id}/edit', EditController::class)->name('edit');
     Route::post('/', StoreController::class)->name('store');
+    Route::put('/{id}', UpdateController::class)->name('update');
+    Route::delete('/{id}', DestroyController::class)->name('destroy');
+});
 
-    Route::put('/{id}' , UpdateController::class)->name('update');
-
-    Route::delete(' /{id}' , DestroyController::class)->name('destroy');
-    });
-
-Route::resource('majors',MajorController::class);
+Route::resource('majors', MajorController::class);

@@ -5,18 +5,38 @@ namespace App\Http\Controllers;
 use App\Http\Requests\Student\StoreRequest;
 use App\Http\Requests\Student\UpdateRequest;
 use App\Models\Student;
+use Illuminate\Http\Request;
 
 class StudentController extends Controller
 {
-    public function index()
+    public function index(request $request)
     {
         $title = "Sistem Sekolah - Daftar Siswa";
 
-        $students = Student::select(['id', 'nis', 'name', 'gender', 'major', 'class'])->get();
+        $search = $request->query('search');
+        $class = $request->query('class');
+        $majors = $request->query('major');
+
+        $students = Student::select(['id', 'nis', 'name', 'gender', 'major', 'class'])
+            ->when($search, function ($query, $search) {
+                $query->where(function ($query) use ($search) {
+                    $query->where('name', 'like', "%{$search}%")
+                        ->orWhere('nis', 'like', "%{$search}%");
+                });
+            })
+            ->when($class, fn($query, $search) => $query->where('class', '=', $class))
+            ->when($majors, fn($query, $majors) => $query->where('majors', '=', $majors))
+            ->paginate(10)
+            ->withQueryString();
+
+        $schoolClasses = ['10 AKL', '11 AKL', '11 TKJ 1', '10 BID', '12 TKJ 2', '12 TKJ 2', '12 TKJ 3'];
+        $majors = ['AKL', 'TKJ', 'BID'];
 
         return view('students.index', [
             'title' => $title,
-            'students' => $students
+            'students' => $students,
+            'schoolClasses' => $schoolClasses,
+            'majors' => $majors,
         ]);
     }
 
